@@ -1,0 +1,16 @@
+---
+# tasks file for ansible-sysctl
+- name: Set sysctl settings...
+  become: true
+  ansible.posix.sysctl:
+    ignoreerrors: "{{ item.ignoreerrors | default(sysctl_default__ignoreerrors) | default(omit) }}"
+    name: "{{ item.name }}"
+    reload: "{{ item.reload | default(sysctl_default__reload) | default(omit) }}"
+    state: "{{ item.state | default(sysctl_default__state) | default(omit) }}"
+    sysctl_file: "{{ item.sysctl_file | default(sysctl_default__sysctl_file) | default(omit) }}"
+    sysctl_set: "{{ item.sysctl_set | default(sysctl_default__sysctl_set) | default(omit) }}"
+    value: "{{ item.value | default(sysctl_default__value) | default(omit) }}"
+  with_items: "{{ lookup('community.general.merge_variables', '^sysctl__.+') }}"
+  tags:
+    - setting
+    - config
